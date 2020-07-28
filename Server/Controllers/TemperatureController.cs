@@ -13,19 +13,17 @@ namespace Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class TemperatureController : ControllerBase
     {
         private IApplicationRepository _repository;
         private ITemperatureSensor _temperatureSensor;
-        private ILightSensor _lightSensor;
 
         private ArduinoTrackingService _trackingService;
 
-        public HomeController(IApplicationRepository repository)
+        public TemperatureController(IApplicationRepository repository, ArduinoTrackingService trackingService)
         {
             _repository = repository;
-            _trackingService = new ArduinoTrackingService(_temperatureSensor, _lightSensor, _repository);
-            _trackingService.StartService();
+            _trackingService = trackingService;
         }
 
         [HttpGet]
@@ -33,6 +31,12 @@ namespace Server.Controllers
         {
             var temperatures = _repository.GetTemperatureSamples();
             return temperatures.ToList();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<TemperatureSample> GetById(int id)
+        {
+            return _repository.GetTemperatureSamples().ToList().Find(t => t.Id == id);
         }
     }
 }

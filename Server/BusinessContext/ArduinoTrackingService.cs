@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Server.Data;
 using Server.Models;
 using Hangfire;
+using System.IO.Ports;
 
 namespace Server.BusinessContext
 {
@@ -13,17 +14,18 @@ namespace Server.BusinessContext
         ITemperatureSensor _temperatureSensor;
         ILightSensor _lightSensor;
         IApplicationRepository _repository;
-
         public ArduinoTrackingService(ITemperatureSensor temperatureSensor, ILightSensor lightSensor, IApplicationRepository repository)
         {
             _temperatureSensor = temperatureSensor;
             _lightSensor = lightSensor;
             _repository = repository;
+
+            StartService();
         }
 
-        public void StartService() => BackgroundJob.Enqueue(() => InitConnection());
+        public void StartService() => RecurringJob.AddOrUpdate(() => GetDataFromArduino(), Cron.Minutely);
 
-        public void InitConnection()
+        public void GetDataFromArduino()
         {
             System.Diagnostics.Debug.WriteLine("STARTING HANGFIRE BACKGROUND JOB....");
             TemperatureSample temperatureSample = _temperatureSensor.GetTemperatureMeasureFromArduino();

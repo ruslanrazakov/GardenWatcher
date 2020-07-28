@@ -13,6 +13,7 @@ namespace Server.BusinessContext
         int id = 0;
         public LightSample GetLightMeasureFromArduino()
         {
+
             return new LightSample() { Id = id++, LightLevel = 2500, DateTime = DateTime.Now };
         }
     }

@@ -33,6 +33,8 @@ namespace Server
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<ITemperatureSensor, TemperatureSensor>();
             services.AddScoped<ILightSensor, LightSensor>();
+            services.AddScoped<ArduinoTrackingService>();
+
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                                                                      .AllowAnyMethod()
