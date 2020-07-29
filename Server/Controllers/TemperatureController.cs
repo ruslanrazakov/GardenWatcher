@@ -16,7 +16,6 @@ namespace Server.Controllers
     public class TemperatureController : ControllerBase
     {
         private IApplicationRepository _repository;
-        private ITemperatureSensor _temperatureSensor;
 
         private ArduinoTrackingService _trackingService;
 
