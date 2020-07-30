@@ -14,6 +14,7 @@ namespace Server.BusinessContext
         char _delimeter;
         int _id;
         string serialMessage;
+        string portName;
 
         public TemperatureSensor()
         {
@@ -23,12 +24,18 @@ namespace Server.BusinessContext
 
         public TemperatureSample GetTemperatureMeasureFromArduino()
         {
-            using (SerialPort serialPort = new SerialPort("COM3", 9600))
+            foreach(var port in SerialPort.GetPortNames())
+            {
+                portName = port;
+            }
+
+            using (SerialPort serialPort = new SerialPort(portName, 9600))
             {
                 serialPort.Open();
                 Thread.Sleep(1000);
-                serialMessage = serialPort.ReadExisting();
-                System.Diagnostics.Debug.WriteLine(serialMessage + " SERIAL MESSAGE");
+                serialMessage = serialPort.ReadLine();
+                serialMessage = serialPort.ReadLine();
+                System.Diagnostics.Debug.WriteLine(serialMessage + " ***SERIAL MESSAGE");
                 serialPort.Close();
             }
             return new TemperatureSample() { Id = _id++, Temperature = ParseSerialMessage(serialMessage), DateTime = DateTime.Now };
