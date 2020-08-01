@@ -9,6 +9,8 @@ namespace Server.Data
         void InsertTemperatureSample(TemperatureSample temperatureSample);
         IEnumerable<LightSample> GetLightSamples();
         void InsertLightSample(LightSample lightSample);
+         IEnumerable<HumiditySample> GetHumiditySamples();
+        void InsertHumiditySample(HumiditySample humiditySample);
         void Save();
     }
 }

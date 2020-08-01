@@ -35,6 +35,9 @@ namespace Server.BusinessContext
             {
                 serialPort.Open();
                 Thread.Sleep(1000);
+                //Sometimes, first request to COM port returns part of serialMesssage
+                //Second request is always OK
+                //TODO: realize CRC algorithm instead of this
                 serialMessage = serialPort.ReadLine();
                 serialMessage = serialPort.ReadLine();
                 System.Diagnostics.Debug.WriteLine(serialMessage + " ***SERIAL MESSAGE");
@@ -42,7 +45,6 @@ namespace Server.BusinessContext
             }
             return new LightSample() { Id = _id++, LightLevel = ParseSerialMessage(serialMessage), DateTime = DateTime.Now };
         }
-
 
         float ParseSerialMessage(string serialMessage)
         {
@@ -63,5 +65,4 @@ namespace Server.BusinessContext
             return float.TryParse(light, NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out result) ? result : 0.0f;
         }
     }
-    
 }

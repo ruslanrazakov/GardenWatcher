@@ -16,6 +16,7 @@ namespace Server.Data
 
         public DbSet<LightSample> LightSamples { get; set; }
         public DbSet<TemperatureSample> TemperatureSamples { get; set; }
+        public DbSet<HumiditySample> HumiditySamples { get; set; }
         public DbSet<PhotoSample> PhotoSamples { get; set; }
 
     }

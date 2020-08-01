@@ -33,6 +33,7 @@ namespace Server
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<ITemperatureSensor, TemperatureSensor>();
             services.AddScoped<ILightSensor, LightSensor>();
+            services.AddScoped<IHumiditySensor, HumiditySensor>();
             services.AddScoped<ArduinoTrackingService>();
 
 
@@ -42,10 +43,18 @@ namespace Server
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, ApplicationContext restaurantContext)
+        public void Configure(IApplicationBuilder app, ApplicationContext context, IHostingEnvironment env)
         {
-            restaurantContext.Database.EnsureDeleted();
-            restaurantContext.Database.EnsureCreated();
+            if(env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
@@ -53,7 +62,6 @@ namespace Server
             app.UseCors("AllowAll");
 
             app.UseMvc();
-
         }
     }
 }

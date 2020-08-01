@@ -14,7 +14,6 @@ namespace Server.Controllers
     public class LightController : Controller
     {
         private IApplicationRepository _repository;
-        private ILightSensor _lightSensor;
 
         public LightController(IApplicationRepository repository)
         {

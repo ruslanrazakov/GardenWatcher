@@ -27,6 +27,11 @@ namespace Server.Data
         public void InsertLightSample(LightSample lightSample)
             => _context.LightSamples.Add(lightSample);
         
+        public IEnumerable<HumiditySample> GetHumiditySamples()
+            => _context.HumiditySamples.ToList();
+
+        public void InsertHumiditySample(HumiditySample humiditySample)
+            => _context.HumiditySamples.Add(humiditySample);
 
         public void Save()
             => _context.SaveChanges();
