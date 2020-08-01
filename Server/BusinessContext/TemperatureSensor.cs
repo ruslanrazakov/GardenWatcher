@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace Server.BusinessContext
 {
@@ -16,10 +17,11 @@ namespace Server.BusinessContext
         string serialMessage;
         string portName;
 
-        public TemperatureSensor()
+        public TemperatureSensor(/**/)
         {
             _delimeter = ';';
             _id = 0;
+            //_logger = logger;
         }
 
         public TemperatureSample GetTemperatureMeasureFromArduino()
@@ -28,7 +30,10 @@ namespace Server.BusinessContext
             {
                 portName = port;
             }
-            
+
+            if(portName==String.Empty)
+                return null;
+
             using (SerialPort serialPort = new SerialPort(portName, 9600))
             {
                 serialPort.Open();

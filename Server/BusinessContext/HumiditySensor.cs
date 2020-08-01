@@ -31,6 +31,9 @@ namespace Server.BusinessContext
                 portName = port;
             }
 
+            if(portName==String.Empty)
+                return null;
+
             using (SerialPort serialPort = new SerialPort(portName, 9600))
             {
                 serialPort.Open();
@@ -43,6 +46,7 @@ namespace Server.BusinessContext
                 System.Diagnostics.Debug.WriteLine(serialMessage + " ***SERIAL MESSAGE");
                 serialPort.Close();
             }
+            
             return new HumiditySample() { Id = _id++, HumidityLevel = ParseSerialMessage(serialMessage), DateTime = DateTime.Now };
         }
 

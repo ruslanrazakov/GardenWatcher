@@ -30,6 +30,9 @@ namespace Server.BusinessContext
             {
                 portName = port;
             }
+            
+            if(portName==String.Empty)
+                return null;
 
             using (SerialPort serialPort = new SerialPort(portName, 9600))
             {

@@ -37,5 +37,11 @@ namespace Server.Controllers
         {
             return _repository.GetTemperatureSamples().ToList().Find(t => t.Id == id);
         }
+
+        [Route("/error")]
+        public ActionResult<String> Error()
+        {
+            return @"{""Status"": ""ServerError""}";
+        }
     }
 }
