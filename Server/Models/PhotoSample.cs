@@ -10,7 +10,7 @@ namespace Server.Models
     {
         public int Id { get; set; }
 
-        //public Image Photo { get; set; }
+        public string PhotoReference { get; set; }
 
         public DateTime DateTime { get; set; }
     }

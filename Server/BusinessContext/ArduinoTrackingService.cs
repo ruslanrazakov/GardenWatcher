@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Server.BusinessContext
 {
+    /// <summary>
+    /// Gets response from Arduino sensors and pushes information to DB
+    /// </summary>
     public class ArduinoTrackingService
     {
         ITemperatureSensor _temperatureSensor;
@@ -37,18 +40,40 @@ namespace Server.BusinessContext
         public void GetDataFromArduino()
         {
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
+
             TemperatureSample temperatureSample = _temperatureSensor.GetTemperatureMeasureFromArduino();
             LightSample lightSample = _lightSensor.GetLightMeasureFromArduino();
             HumiditySample humiditySample = _humiditySensor.GetHumidityMeasureFromArduino();
-            if (temperatureSample == null || lightSample == null || humiditySample == null)
-            {
-                _logger.Log(LogLevel.Information, "ERROR DURING SENSOR SERVISES WORKING. NO ACTIVE COM PORT NOT FOUND.");
+
+            if(!SensorsResponseSuccess(temperatureSample, lightSample, humiditySample))
                 return;
-            }
+
             _repository.InsertTemperatureSample(temperatureSample);
             _repository.InsertLightSample(lightSample);
             _repository.InsertHumiditySample(humiditySample);
+
             _repository.Save();
+        }
+
+        bool SensorsResponseSuccess(TemperatureSample temperatureSample, LightSample lightSample, HumiditySample humiditySample)
+        {
+            if (temperatureSample == null)
+            {
+                _logger.Log(LogLevel.Information, "ERROR DURING TEMPERATURE SENSOR WORKING. ACTIVE COM PORT NOT FOUND.");
+                return false;
+            }
+            else if (lightSample == null )
+            {
+                 _logger.Log(LogLevel.Information, "ERROR DURING LIGHT SENSOR WORKING. ACTIVE COM PORT NOT FOUND.");
+                return false;
+            }
+            else if (humiditySample == null)
+            {
+                 _logger.Log(LogLevel.Information, "ERROR DURING HUMIDITY SENSOR WORKING. ACTIVE COM PORT NOT FOUND.");
+                return false;
+            }
+            else
+                return true;
         }
     }
 }
