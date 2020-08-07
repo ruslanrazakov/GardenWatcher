@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.BusinessContext;
 using Server.Data;
@@ -12,17 +10,15 @@ using Server.Models;
 namespace Server.Controllers
 {
     [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     public class TemperatureController : ControllerBase
     {
         private IApplicationRepository _repository;
 
-        private ArduinoTrackingService _trackingService;
-
-        public TemperatureController(IApplicationRepository repository, ArduinoTrackingService trackingService)
+        public TemperatureController(IApplicationRepository repository)
         {
             _repository = repository;
-            _trackingService = trackingService;
         }
 
         [HttpGet]

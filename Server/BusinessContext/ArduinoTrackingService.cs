@@ -13,12 +13,13 @@ namespace Server.BusinessContext
     /// <summary>
     /// Gets response from Arduino sensors and pushes information to DB
     /// </summary>
-    public class ArduinoTrackingService
+    public class ArduinoTrackingService : ITrackingService
     {
         ITemperatureSensor _temperatureSensor;
         ILightSensor _lightSensor;
         IHumiditySensor _humiditySensor;
         IApplicationRepository _repository;
+        
         ILogger _logger;
 
         public ArduinoTrackingService(ITemperatureSensor temperatureSensor, ILightSensor lightSensor,
@@ -31,13 +32,9 @@ namespace Server.BusinessContext
             _repository = repository;
             _logger = logger;
             _logger.Log(LogLevel.Information, "ARDUINO TRACKING SERVICE STARTED");
-
-            StartService();
         }
 
-        public void StartService() => RecurringJob.AddOrUpdate(() => GetDataFromArduino(), Cron.Minutely);
-
-        public void GetDataFromArduino()
+        public Task GetData()
         {
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
 
@@ -46,13 +43,16 @@ namespace Server.BusinessContext
             HumiditySample humiditySample = _humiditySensor.GetHumidityMeasureFromArduino();
 
             if(!SensorsResponseSuccess(temperatureSample, lightSample, humiditySample))
-                return;
+                return Task.Delay(1000);
+            else
+            {
+                _repository.InsertTemperatureSample(temperatureSample);
+                _repository.InsertLightSample(lightSample);
+                _repository.InsertHumiditySample(humiditySample);
 
-            _repository.InsertTemperatureSample(temperatureSample);
-            _repository.InsertLightSample(lightSample);
-            _repository.InsertHumiditySample(humiditySample);
-
-            _repository.Save();
+                _repository.Save();
+                return Task.Delay(1000);
+            }
         }
 
         bool SensorsResponseSuccess(TemperatureSample temperatureSample, LightSample lightSample, HumiditySample humiditySample)

@@ -34,12 +34,12 @@ namespace Server
             services.AddScoped<ITemperatureSensor, TemperatureSensor>();
             services.AddScoped<ILightSensor, LightSensor>();
             services.AddScoped<IHumiditySensor, HumiditySensor>();
-            services.AddScoped<ArduinoTrackingService>();
+            services.AddScoped<ITrackingService, ArduinoTrackingService>();
 
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
-                                                                     .AllowAnyMethod()
-                                                                      .AllowAnyHeader()));
+                                                                            .AllowAnyMethod()
+                                                                            .AllowAnyHeader()));
             services.AddMvc();
         }
 
@@ -62,6 +62,8 @@ namespace Server
             app.UseCors("AllowAll");
 
             app.UseMvc();
+            //Starting main tracking service with Hangfire
+            RecurringJob.AddOrUpdate((ITrackingService x) => x.GetData(), Cron.Minutely);
         }
     }
 }
