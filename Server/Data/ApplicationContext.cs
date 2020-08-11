@@ -13,11 +13,7 @@ namespace Server.Data
             : base(options)
         {
         }
-
-        public DbSet<LightSample> LightSamples { get; set; }
-        public DbSet<TemperatureSample> TemperatureSamples { get; set; }
-        public DbSet<HumiditySample> HumiditySamples { get; set; }
-        public DbSet<PhotoSample> PhotoSamples { get; set; }
+        public DbSet<MeasureModel> Measures { get; set; }
 
     }
 }

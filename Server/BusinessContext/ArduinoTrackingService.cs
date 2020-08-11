@@ -15,21 +15,16 @@ namespace Server.BusinessContext
     /// </summary>
     public class ArduinoTrackingService : ITrackingService
     {
-        ITemperatureSensor _temperatureSensor;
-        ILightSensor _lightSensor;
-        IHumiditySensor _humiditySensor;
         IApplicationRepository _repository;
-        
+        ISensorsProcessor _sensorsProcessor;
+
         ILogger _logger;
 
-        public ArduinoTrackingService(ITemperatureSensor temperatureSensor, ILightSensor lightSensor,
-                                      IHumiditySensor sensor, IApplicationRepository repository,
+        public ArduinoTrackingService(IApplicationRepository repository, ISensorsProcessor sensorsProcessor,
                                       ILogger <ArduinoTrackingService> logger)
         {
-            _temperatureSensor = temperatureSensor;
-            _lightSensor = lightSensor;
-            _humiditySensor = sensor;
             _repository = repository;
+            _sensorsProcessor = sensorsProcessor;
             _logger = logger;
             _logger.Log(LogLevel.Information, "ARDUINO TRACKING SERVICE STARTED");
         }
@@ -38,42 +33,24 @@ namespace Server.BusinessContext
         {
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
 
-            TemperatureSample temperatureSample = _temperatureSensor.GetTemperatureMeasureFromArduino();
-            LightSample lightSample = _lightSensor.GetLightMeasureFromArduino();
-            HumiditySample humiditySample = _humiditySensor.GetHumidityMeasureFromArduino();
-
-            if(!SensorsResponseSuccess(temperatureSample, lightSample, humiditySample))
-                return Task.Delay(1000);
-            else
+            MeasureModel measure = _sensorsProcessor.GetData();
+            if(SensorsResponseSuccess(measure))
             {
-                _repository.InsertTemperatureSample(temperatureSample);
-                _repository.InsertLightSample(lightSample);
-                _repository.InsertHumiditySample(humiditySample);
-
+                 _repository.InsertMeasure(measure);
                 _repository.Save();
-                return Task.Delay(1000);
+                return Task.Delay(100);
             }
+            else return Task.Delay(100);
         }
 
-        bool SensorsResponseSuccess(TemperatureSample temperatureSample, LightSample lightSample, HumiditySample humiditySample)
+        bool SensorsResponseSuccess(MeasureModel measure)
         {
-            if (temperatureSample == null)
+            if (measure == null)
             {
-                _logger.Log(LogLevel.Information, "ERROR DURING TEMPERATURE SENSOR WORKING. ACTIVE COM PORT NOT FOUND.");
+                _logger.Log(LogLevel.Information, "ERROR DURING SENSORS WORKING. ACTIVE COM PORT NOT FOUND.");
                 return false;
             }
-            else if (lightSample == null )
-            {
-                 _logger.Log(LogLevel.Information, "ERROR DURING LIGHT SENSOR WORKING. ACTIVE COM PORT NOT FOUND.");
-                return false;
-            }
-            else if (humiditySample == null)
-            {
-                 _logger.Log(LogLevel.Information, "ERROR DURING HUMIDITY SENSOR WORKING. ACTIVE COM PORT NOT FOUND.");
-                return false;
-            }
-            else
-                return true;
+           else return true;
         }
     }
 }

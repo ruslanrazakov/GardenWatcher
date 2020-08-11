@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,26 +12,26 @@ namespace Server.Controllers
     [Route("api/[controller]")]
     [Route("")]
     [ApiController]
-    public class TemperatureController : ControllerBase
+    public class HomeController : ControllerBase
     {
         private IApplicationRepository _repository;
 
-        public TemperatureController(IApplicationRepository repository)
+        public HomeController(IApplicationRepository repository)
         {
             _repository = repository;
         }
 
         [HttpGet]
-        public ActionResult<List<TemperatureSample>> Get()
+        public ActionResult<List<MeasureModel>> Get()
         {
-            var temperatures = _repository.GetTemperatureSamples();
-            return temperatures.ToList();
+            var measures = _repository.GetMeasures();
+            return measures.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TemperatureSample> GetById(int id)
+        public ActionResult<MeasureModel> GetById(int id)
         {
-            return _repository.GetTemperatureSamples().ToList().Find(t => t.Id == id);
+            return _repository.GetMeasures().ToList().Find(t => t.Id == id);
         }
 
         [Route("/error")]

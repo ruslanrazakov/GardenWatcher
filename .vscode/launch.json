@@ -5,20 +5,20 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET Core Launch (web-api)",
+            "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildweb",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Server/bin/Debug/netcoreapp2.1/Server.dll",
+            "program": "${workspaceFolder}/Client/bin/Debug/netcoreapp2.1/Client.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Server",
+            "cwd": "${workspaceFolder}/Client",
             "stopAtEntry": false,
             
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            // Enable launching a web browser when Client starts.
             "launchBrowser": {
                 
-                "enabled": false,
+                "enabled": true,
                 "args": "${auto-detect-url}",
                 "windows": {
                     "command": "cmd.exe",
@@ -32,12 +32,49 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
         },
+        
+        {
+            "name": ".NET Core Launch (web-api)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildapi",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Server/bin/Debug/netcoreapp2.1/Server.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Server",
+            "stopAtEntry": false,
+            
+            // Enable launching a web browser when Server starts.
+            "launchBrowser": {
+                
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        
         {
             "name": ".NET Core Attach",
             "type": "coreclr",

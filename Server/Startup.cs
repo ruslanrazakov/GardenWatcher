@@ -19,7 +19,6 @@ namespace Server
 {
     public class Startup
     {
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(options =>
@@ -31,11 +30,8 @@ namespace Server
             });
 
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
-            services.AddScoped<ITemperatureSensor, TemperatureSensor>();
-            services.AddScoped<ILightSensor, LightSensor>();
-            services.AddScoped<IHumiditySensor, HumiditySensor>();
+            services.AddScoped<ISensorsProcessor, SensorsProcessor>();
             services.AddScoped<ITrackingService, ArduinoTrackingService>();
-
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                                                                             .AllowAnyMethod()
@@ -63,7 +59,7 @@ namespace Server
 
             app.UseMvc();
             //Starting main tracking service with Hangfire
-            RecurringJob.AddOrUpdate((ITrackingService x) => x.GetData(), Cron.Minutely);
+            RecurringJob.AddOrUpdate((ITrackingService t) => t.GetData(), Cron.Minutely);
         }
     }
 }

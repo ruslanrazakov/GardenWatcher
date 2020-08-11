@@ -5,12 +5,8 @@ namespace Server.Data
 {
     public interface IApplicationRepository
     {
-        IEnumerable<TemperatureSample> GetTemperatureSamples();
-        void InsertTemperatureSample(TemperatureSample temperatureSample);
-        IEnumerable<LightSample> GetLightSamples();
-        void InsertLightSample(LightSample lightSample);
-         IEnumerable<HumiditySample> GetHumiditySamples();
-        void InsertHumiditySample(HumiditySample humiditySample);
+        IEnumerable<MeasureModel> GetMeasures();
+        void InsertMeasure(MeasureModel measure);
         void Save();
     }
 }
