@@ -34,18 +34,15 @@ namespace Server.BusinessContext
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
 
             MeasureModel measure = _sensorsProcessor.GetData();
-            if(SensorsResponseSuccess(measure))
-            {
-                 _repository.InsertMeasure(measure);
-                _repository.Save();
-                return Task.Delay(100);
-            }
-            else return Task.Delay(100);
+            SensorsResponseSuccess(measure);
+            _repository.InsertMeasure(measure);
+            _repository.Save();
+            return Task.Delay(100);
         }
 
         bool SensorsResponseSuccess(MeasureModel measure)
         {
-            if (measure == null)
+            if (!_sensorsProcessor.ConnectionSuccess)
             {
                 _logger.Log(LogLevel.Information, "ERROR DURING SENSORS WORKING. ACTIVE COM PORT NOT FOUND.");
                 return false;

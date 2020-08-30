@@ -21,18 +21,21 @@ namespace Client.Controllers
         {
             HttpClient httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri("http://localhost:5001");
-            HttpResponseMessage response = await httpClient.GetAsync("api/Home");
-
-            var measures = await response.Content.ReadAsAsync<IEnumerable<MeasureModel>>();
-
-            if (response.IsSuccessStatusCode)
+            HttpResponseMessage response;
+            try
             {
-                return View(measures);
+                response = await httpClient.GetAsync("api/Home");
             }
-            else
+            catch(HttpRequestException)
             {
                 return View("Error");
             }
+
+            var measures = await response.Content.ReadAsAsync<IEnumerable<MeasureModel>>();
+            if (response.IsSuccessStatusCode)
+                return View(measures);
+            else
+                return View("Error");
         }
     }
 }

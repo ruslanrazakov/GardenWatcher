@@ -32,6 +32,7 @@ namespace Server
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<ISensorsProcessor, SensorsProcessor>();
             services.AddScoped<ITrackingService, ArduinoTrackingService>();
+            services.AddScoped<IBashService, BashService>();
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                                                                             .AllowAnyMethod()
@@ -39,7 +40,7 @@ namespace Server
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, ApplicationContext context, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, ApplicationContext context, IHostingEnvironment env, IBashService bash)
         {
             if(env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
