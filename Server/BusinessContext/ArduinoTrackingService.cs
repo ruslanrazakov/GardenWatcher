@@ -34,13 +34,13 @@ namespace Server.BusinessContext
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
 
             MeasureModel measure = _sensorsProcessor.GetData();
-            SensorsResponseSuccess(measure);
+            SensorsResponseSuccess();
             _repository.InsertMeasure(measure);
             _repository.Save();
             return Task.Delay(100);
         }
 
-        bool SensorsResponseSuccess(MeasureModel measure)
+        bool SensorsResponseSuccess()
         {
             if (!_sensorsProcessor.ConnectionSuccess)
             {

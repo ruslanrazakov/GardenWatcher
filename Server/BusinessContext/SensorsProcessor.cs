@@ -7,9 +7,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.BusinessContext;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Contains common fields and methods for all sensors in business layer
+/// Serial Port and arduino message parsing actions
 /// </summary>
 public class SensorsProcessor : ISensorsProcessor
 {
@@ -17,12 +18,13 @@ public class SensorsProcessor : ISensorsProcessor
     private string _serialMessage;
     private string _portName;
     public bool ConnectionSuccess {get; set;}
+    private ILogger _logger;
 
-
-    public SensorsProcessor()
+    public SensorsProcessor(ILogger<SensorsProcessor> logger)
     {
         _portName = String.Empty;
         _id = 0;
+        _logger = logger;
     }
 
     public MeasureModel GetData()
@@ -62,7 +64,7 @@ public class SensorsProcessor : ISensorsProcessor
             //TODO: implement CRC algorithm instead of this
             _serialMessage = serialPort.ReadLine();
             _serialMessage = serialPort.ReadLine();
-            System.Diagnostics.Debug.WriteLine(_serialMessage + "   SERIAL MESSAGE");
+            _logger.Log(LogLevel.Information,  "SERIAL MESSAGE RECEIVED: " + _serialMessage);
             serialPort.Close();
         }
         return true;
@@ -111,7 +113,6 @@ public class SensorsProcessor : ISensorsProcessor
 
     private string GetPhotoFilePath()
     {
-        var i = DateTime.Now.ToString("dd-HH");
         return Directory.GetFiles("/home/rus/Photos").FirstOrDefault(f=>f.Contains(DateTime.Now.ToString("dd-HH")));
     }
 }
