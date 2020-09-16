@@ -18,4 +18,10 @@
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
 
+   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+    <None Update="webcam.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

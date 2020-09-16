@@ -1,25 +1,28 @@
 using Server.BusinessContext;
 using System.Diagnostics;
 
-public class BashService : IBashService
+namespace Server.BusinessContext
 {
-    public BashService()
+    public class BashService : IBashService
     {
-        StartPhotoProcessBashScript();   
-    }   
-
-    public void StartPhotoProcessBashScript()
-    {
-        var process = new Process()
+        public BashService()
         {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "webcam.sh",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                }
-        };
-        process.Start();
+            StartPhotoProcessBashScript();
+        }
+
+        public void StartPhotoProcessBashScript()
+        {
+            var process = new Process()
+            {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "webcam.sh",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    }
+            };
+            process.Start();
+        }
     }
 }

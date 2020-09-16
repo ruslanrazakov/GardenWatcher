@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.Data;
 using Hangfire.MemoryStorage;
 using Server.BusinessContext;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Server
 {
@@ -40,7 +42,7 @@ namespace Server
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, ApplicationContext context, IHostingEnvironment env, IBashService bash)
+        public void Configure(IApplicationBuilder app, ApplicationContext context, IHostingEnvironment env, IBashService bashService)
         {
             if(env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
@@ -57,6 +59,9 @@ namespace Server
             app.UseHangfireServer();
 
             app.UseCors("AllowAll");
+            app.UseStaticFiles();
+
+            app.UseFileServer(enableDirectoryBrowsing: true);
 
             app.UseMvc();
             //Starting main tracking service with Hangfire
