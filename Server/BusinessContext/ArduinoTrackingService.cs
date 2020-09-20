@@ -17,7 +17,6 @@ namespace Server.BusinessContext
     {
         IApplicationRepository _repository;
         ISensorsProcessor _sensorsProcessor;
-
         ILogger _logger;
 
         public ArduinoTrackingService(IApplicationRepository repository, ISensorsProcessor sensorsProcessor,
@@ -34,20 +33,16 @@ namespace Server.BusinessContext
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
 
             MeasureModel measure = _sensorsProcessor.GetData();
-            SensorsResponseSuccess();
+            CheckSensorsResponseSuccess();
             _repository.InsertMeasure(measure);
             _repository.Save();
             return Task.Delay(100);
         }
 
-        bool SensorsResponseSuccess()
+        private void CheckSensorsResponseSuccess()
         {
             if (!_sensorsProcessor.ConnectionSuccess)
-            {
                 _logger.Log(LogLevel.Information, "ERROR DURING SENSORS WORKING. ACTIVE COM PORT NOT FOUND.");
-                return false;
-            }
-           else return true;
         }
     }
 }

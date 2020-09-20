@@ -46,7 +46,7 @@
         },
 
         // {
-        //     "label": "publish",
+        //     "label": "publishapi",
         //     "command": "dotnet",
         //     "type": "process",
         //     "args": [

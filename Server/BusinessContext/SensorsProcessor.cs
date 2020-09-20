@@ -1,10 +1,12 @@
 using System;
 using Server.Models;
+using Server.Data;
 using System.IO.Ports;
 using System.IO;
 using System.Linq;
 using Server.BusinessContext;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Server.BusinessContext
 {
@@ -13,16 +15,18 @@ namespace Server.BusinessContext
     /// </summary>
     public class SensorsProcessor : ISensorsProcessor
     {
+        public bool ConnectionSuccess {get; set;}
         private int _id;
         private string _serialMessage;
         private string _portName;
-        public bool ConnectionSuccess {get; set;}
+        private IApplicationRepository _repository;
         private ILogger _logger;
 
-        public SensorsProcessor(ILogger<SensorsProcessor> logger)
+        public SensorsProcessor(ILogger<SensorsProcessor> logger, IApplicationRepository repository)
         {
             _portName = String.Empty;
-            _id = 0;
+            _repository = repository;
+            _id = GetLastIdInDb()+1;
             _logger = logger;
         }
 
@@ -36,7 +40,7 @@ namespace Server.BusinessContext
             }
             return new MeasureModel()
             {
-                Id = _id++,
+                Id = _id,
                 Temperature = ConnectionSuccess ? Convert.ToInt32(temperature) : 0,
                 Light = ConnectionSuccess ? Convert.ToInt32(light) : 0,
                 Humidity = ConnectionSuccess ? Convert.ToInt32(humidity) : 0,
@@ -112,9 +116,18 @@ namespace Server.BusinessContext
 
         private string GetPhotoFilePath()
         {
-            var fileName = Path.GetFileName(Directory.GetFiles(Environment.CurrentDirectory + "/wwwroot/Photos").Last());
+            var fileNames = Directory.GetFiles(Environment.CurrentDirectory + "/wwwroot/Photos");
+            var fileName = Path.GetFileName(Directory.GetFiles(Environment.CurrentDirectory + "/wwwroot/Photos")
+                                                     .OrderBy(f=>File.GetCreationTime(f))
+                                                     .LastOrDefault());
             _logger.Log(LogLevel.Information, "PHOTOFILENAME       " +  fileName);
             return fileName != null ? String.Concat("http://185.43.6.193:80/Photos/", fileName) : null;
+        }
+
+        private int GetLastIdInDb()
+        {
+            int? lastId = _repository.GetMeasures()?.LastOrDefault()?.Id;
+            return lastId != null ? Convert.ToInt32(lastId) : 0;
         }
     }
 }
