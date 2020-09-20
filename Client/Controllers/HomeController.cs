@@ -20,7 +20,7 @@ namespace Client.Controllers
         public async Task<IActionResult> Index()
         {
             HttpClient httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri("http://localhost:5001");
+            httpClient.BaseAddress = new Uri("http://185.43.6.193:80/");
             HttpResponseMessage response;
             try
             {

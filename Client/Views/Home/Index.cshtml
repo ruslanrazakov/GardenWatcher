@@ -14,7 +14,7 @@
     {
         <div class="photo-index-card">
             <div class="image-wrapper">
-                <img class="photo-display-img" src="~/images/reaperPhoto.jpeg"/>
+                <img class="photo-display-img" src="@Url.Content(item.PhotoFilePath)"/>
             </div>
             <div class="display-picture-title">
                 <h6>Photo Id: @Html.DisplayFor(modelItem => item.Id)</h6>
