@@ -36,6 +36,8 @@ namespace Server
             services.AddScoped<ITrackingService, ArduinoTrackingService>();
             services.AddScoped<IBashService, BashService>();
 
+            services.AddDirectoryBrowser();
+
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                                                                             .AllowAnyMethod()
                                                                             .AllowAnyHeader()));
@@ -59,10 +61,11 @@ namespace Server
             app.UseHangfireServer();
 
             app.UseCors("AllowAll");
+
             app.UseStaticFiles();
+            app.UseDirectoryBrowser();
 
             app.UseFileServer(enableDirectoryBrowsing: true);
-
             app.UseMvc();
             //Starting main tracking service with Hangfire
             RecurringJob.AddOrUpdate((ITrackingService t) => t.GetData(), Cron.Hourly);
