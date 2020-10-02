@@ -20,10 +20,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

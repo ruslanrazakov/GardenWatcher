@@ -16,6 +16,7 @@ using Hangfire.MemoryStorage;
 using Server.BusinessContext;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Server
 {
@@ -37,7 +38,6 @@ namespace Server
             services.AddScoped<IBashService, BashService>();
 
             services.AddDirectoryBrowser();
-
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
                                                                             .AllowAnyMethod()
                                                                             .AllowAnyHeader()));
@@ -54,21 +54,25 @@ namespace Server
                 app.UseHsts();
             }
 
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
 
             app.UseCors("AllowAll");
-
+           
             app.UseStaticFiles();
-            app.UseDirectoryBrowser();
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.WebRootPath, "photos")),
+                RequestPath = "/photos"
+            });
+            app.UseFileServer();
 
-            app.UseFileServer(enableDirectoryBrowsing: true);
             app.UseMvc();
             //Starting main tracking service with Hangfire
-            RecurringJob.AddOrUpdate((ITrackingService t) => t.GetData(), Cron.Hourly);
+            RecurringJob.AddOrUpdate((ITrackingService t) => t.GetData(), Cron.Minutely);
         }
     }
 }

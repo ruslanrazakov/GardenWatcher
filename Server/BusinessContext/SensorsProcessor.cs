@@ -116,12 +116,12 @@ namespace Server.BusinessContext
 
         private string GetPhotoFilePath()
         {
-            _logger.Log(LogLevel.Information, "PHOTOFILEPATH:   " + AppDomain.CurrentDomain.BaseDirectory + "/wwwroot/Photos");
+            _logger.Log(LogLevel.Information, "PHOTOFILEPATH:   " + AppDomain.CurrentDomain.BaseDirectory + "wwwroot/photos");
 
-            var fileName = Path.GetFileName(Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "/wwwroot/Photos")
+            var fileName = Path.GetFileName(Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "wwwroot/photos")
                                                      .OrderBy(f=>File.GetCreationTime(f))
                                                      .LastOrDefault());
-            return fileName != null ? String.Concat("http://185.43.6.193:80/Photos/", fileName) : null;
+            return fileName != null ? String.Concat("http://185.43.6.193:80/photos/", fileName) : null;
         }
 
         private int GetLastIdInDb()

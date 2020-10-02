@@ -19,6 +19,7 @@ namespace Server
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .UseWebRoot(Path.Combine(AppContext.BaseDirectory, "wwwroot"))
             .ConfigureLogging(logging =>
             {
                 logging.ClearProviders();
