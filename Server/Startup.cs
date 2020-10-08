@@ -54,7 +54,7 @@ namespace Server
                 app.UseHsts();
             }
 
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             app.UseHangfireDashboard();
@@ -72,7 +72,7 @@ namespace Server
 
             app.UseMvc();
             //Starting main tracking service with Hangfire
-            RecurringJob.AddOrUpdate((ITrackingService t) => t.GetData(), Cron.Minutely);
+            RecurringJob.AddOrUpdate((ITrackingService t) => t.WriteMeasuresToDb(), Cron.Hourly);
         }
     }
 }

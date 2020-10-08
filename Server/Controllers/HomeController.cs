@@ -10,15 +10,16 @@ using Server.Models;
 namespace Server.Controllers
 {
     [Route("api/[controller]")]
-    [Route("")]
     [ApiController]
     public class HomeController : ControllerBase
     {
         private IApplicationRepository _repository;
+        private ITrackingService _trackingService;
 
-        public HomeController(IApplicationRepository repository)
+        public HomeController(IApplicationRepository repository, ITrackingService trackingService)
         {
             _repository = repository;
+            _trackingService = trackingService;
         }
 
         [HttpGet]
@@ -32,6 +33,12 @@ namespace Server.Controllers
         public ActionResult<MeasureModel> GetById(int id)
         {
             return _repository.GetMeasures().ToList().Find(t => t.Id == id);
+        }
+
+        [Route("/getcurrent")]
+        public ActionResult<MeasureModel> GetCurrentMeasures()
+        {
+            return _trackingService.GetCurrentMeasure();
         }
 
         [Route("/error")]

@@ -7,6 +7,7 @@ using System.Linq;
 using Server.BusinessContext;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Server.BusinessContext
 {
@@ -35,7 +36,6 @@ namespace Server.BusinessContext
             string temperature = String.Empty, light = String.Empty, humidity = String.Empty;
             if(SerialPortOpen())
             {
-                ConnectionSuccess = true;
                 ParseSerialMessage(_serialMessage, out temperature, out light, out humidity);
             }
             return new MeasureModel()
@@ -59,18 +59,37 @@ namespace Server.BusinessContext
             if(_portName==String.Empty)
                 return false;
 
-            using (SerialPort serialPort = new SerialPort(_portName, 9600))
+            try
             {
-                serialPort.Open();
-                //Sometimes, first request to COM port returns part of serialMesssage
-                //Second request is always OK
-                //TODO: implement CRC algorithm instead of this
-                _serialMessage = serialPort.ReadLine();
-                _serialMessage = serialPort.ReadLine();
-                _logger.Log(LogLevel.Information,  "SERIAL MESSAGE RECEIVED: " + _serialMessage);
-                serialPort.Close();
+                using (SerialPort serialPort = new SerialPort(_portName, 9600))
+                {
+                    serialPort.Open();
+                    //Sometimes, first request to COM port returns part of serialMesssage
+                    //Second request is always OK
+                    //TODO: implement CRC algorithm instead of this
+                    _serialMessage = serialPort.ReadLine();
+                    _serialMessage = serialPort.ReadLine();
+                    _logger.Log(LogLevel.Information,  "SERIAL MESSAGE RECEIVED: " + _serialMessage);
+                    serialPort.Close();
+                }
             }
-            return true;
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Information, "SERIAL IS BUSY. TRYING AGAIN IN 5 SECONDS... " + ex.Message);
+                Thread.Sleep (5000);
+                SerialPortOpen();
+            }
+
+            if (!String.IsNullOrEmpty(_serialMessage))
+            {
+                ConnectionSuccess = true;
+                return true;
+            }
+            else
+            {
+                ConnectionSuccess = false;
+                return false;
+            }
         }
 
         private void ParseSerialMessage(string _serialMessage, out string temperature, out string light, out string humidity)

@@ -28,7 +28,7 @@ namespace Server.BusinessContext
             _logger.Log(LogLevel.Information, "ARDUINO TRACKING SERVICE STARTED");
         }
 
-        public Task GetData()
+        public Task WriteMeasuresToDb()
         {
             _logger.Log(LogLevel.Information, "STARTING HANGFIRE BACKGROUND JOB....");
 
@@ -36,7 +36,12 @@ namespace Server.BusinessContext
             CheckSensorsResponseSuccess();
             _repository.InsertMeasure(measure);
             _repository.Save();
-            return Task.Delay(100);
+            return Task.Delay(10);
+        }
+
+        public MeasureModel GetCurrentMeasure()
+        {
+            return _sensorsProcessor.GetData();
         }
 
         private void CheckSensorsResponseSuccess()

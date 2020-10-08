@@ -1,18 +1,31 @@
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <BH1750.h>
+#include <Wire.h>
 
 int temperature = 0;
-int light = 0;
+uint16_t light = 0;
 int humidity = 0;
 
+BH1750 lightMeter;    // uses last analog ports   (A4) and (A5)
+int humidityPin = 0   // port for humidity sensor (A0)
+OneWire oneWire(15);  // port for temp sensor     (A1)
+DallasTemperature ds(&oneWire);
 
 void setup() {
   Serial.begin(9600);
+  Wire.begin();
+  lightMeter.begin();
+  ds.begin();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  light = analogRead(0);
-  humidity = analogRead(1);
-  temperature = analogRead(2);
+  ds.requestTemperatures();   
+
+  temperature =  ds.getTempCByIndex(0);
+  light = lightMeter.readLightLevel();
+  humidity = analogRead(humidityPin);
+  
   Serial.print("t");
   Serial.print(temperature);
   Serial.print("l");
