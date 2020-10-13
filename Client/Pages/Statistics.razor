@@ -1,0 +1,60 @@
+﻿@page "/statistics"
+
+@using Client.Data
+@inject GetMeasuresService MeasuresService
+
+<h1>Garden Watcher</h1>
+
+<p>Statistics @firstMeasureDateTime to @DateTime.Now.ToString(dateTimeFormat)</p>
+
+@if (measures == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Temperature (C)</th>
+                <th>Light (lux)</th>
+                <th>Humidity</th>
+                <th>Photo Preview</th>
+                <th>Date Time</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var measure in measures)
+            {
+                <tr>
+                    <td>@measure.Id</td>
+                    <td>@measure.Temperature</td>
+                    <td>@measure.Light</td>
+                    <td>@measure.Humidity</td>
+                    <td>
+                        <a href="javascript:;" onClick="openImage('@measure.PhotoFilePath')">
+                            <img class="photo-display-img" src="@measure.PhotoFilePath"/>
+                        </a>
+                    </td>
+                    <td>@measure.DateTime.ToString(dateTimeFormat)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    
+}
+
+@code {
+    private MeasureModel[] measures;
+    private string firstMeasureDateTime;
+    private string dateTimeFormat = "dd.MM.yyyy HH:mm";
+
+    protected override async Task OnInitializedAsync()
+    {
+        measures = await MeasuresService.GetMeasuresAsync(DateTime.Now);
+        firstMeasureDateTime = measures?.Last()?.DateTime.ToString(dateTimeFormat);
+    }
+}
