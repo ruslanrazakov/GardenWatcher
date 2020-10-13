@@ -28,7 +28,7 @@ Contains HomeController, that can returns measures from DB with Get() method, or
 All layers were implemented as services and were placed in DI containers.
 
 # Web Client side
-In progress. Now it is a simple ASP.Net core MVC web application, that gets data from server with HttpGetRequest() method in controller.
+In progress. Now it is a simple Blazor one-page web application, that gets data from server and returns statistics table.
 
 # Installation
 
