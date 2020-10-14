@@ -5,14 +5,17 @@
 
 <h1>Garden Watcher</h1>
 
-<p>Statistics @firstMeasureDateTime to @DateTime.Now.ToString(dateTimeFormat)</p>
 
-@if (measures == null)
+@if (measures == null || measures.Count() == 0)
 {
+    <p>Waiting server request</p>
+
     <p><em>Loading...</em></p>
 }
 else
 {
+    <p>Statistics @firstMeasureDateTime to @DateTime.Now.ToString(dateTimeFormat)</p>
+
     <table class="table">
         <thead>
             <tr>
@@ -55,6 +58,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         measures = await MeasuresService.GetMeasuresAsync(DateTime.Now);
-        firstMeasureDateTime = measures?.Last()?.DateTime.ToString(dateTimeFormat);
+        if(measures.Count() != 0)
+            firstMeasureDateTime = measures?.Last()?.DateTime.ToString(dateTimeFormat);
     }
 }

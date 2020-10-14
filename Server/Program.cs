@@ -25,6 +25,7 @@ namespace Server
                 logging.ClearProviders();
                 logging.AddConsole();
             })
-            .UseStartup<Startup>();
+            .UseStartup<Startup>()
+            .UseUrls("http://localhost:5001/");
     }
 }
